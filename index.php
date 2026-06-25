@@ -1,14 +1,16 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require __DIR__ . '/PHPMailer/src/Exception.php';
-require __DIR__ . '/PHPMailer/src/PHPMailer.php';
-require __DIR__ . '/PHPMailer/src/SMTP.php';
 /* ─────────────────────────────────────────────────────────
    VillArte | Formulario de contacto
    Envío: info@villarte.qlynk.mx
 ───────────────────────────────────────────────────────── */
+
+require __DIR__ . '/PHPMailer/src/Exception.php';
+require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require __DIR__ . '/PHPMailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 $form_success = false;
 $form_error   = '';
 
@@ -28,10 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
-            $mail->Host       = 'mail.villarte.qlynk.mx'; // servidor SMTP de HostGator
+            $mail->Host       = 'mail.villarte.qlynk.mx';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'info@villarte.qlynk.mx'; // tu correo
-            $mail->Password   = '.V1ll4rt3.';     // 
+            $mail->Username   = 'info@villarte.qlynk.mx';
+            $mail->Password   = '.V1ll4rt3.';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SSL;
             $mail->Port       = 465;
             $mail->CharSet    = 'UTF-8';
