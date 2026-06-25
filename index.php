@@ -19,24 +19,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $form_error = 'El correo electrónico ingresado no es válido.';
     } else {
-        $to      = 'info@villarte.qlynk.mx';
-        $subject = '=?UTF-8?B?' . base64_encode("Nueva cotización VillArte – $service") . '?=';
-        $body    = "Nueva solicitud de información\n"
-                 . "================================\n"
-                 . "Nombre:   $name\n"
-                 . "Correo:   $email\n"
-                 . "Teléfono: $phone\n"
-                 . "Servicio: $service\n\n"
-                 . "Mensaje:\n$message";
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\Exception;
 
-        $headers  = "From: VillArte Web <info@villarte.qlynk.mx>\r\n";
-        $headers .= "Reply-To: $email\r\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+        require __DIR__ . '/PHPMailer/src/Exception.php';
+        require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+        require __DIR__ . '/PHPMailer/src/SMTP.php';
 
-        $form_success = mail($to, $subject, $body, $headers, '-f info@villarte.qlynk.mx');
-        if (!$form_success) {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'mail.villarte.qlynk.mx'; // servidor SMTP de HostGator
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'info@villarte.qlynk.mx'; // tu correo
+            $mail->Password   = '.V1ll4rt3.';     // 
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SSL;
+            $mail->Port       = 465;
+            $mail->CharSet    = 'UTF-8';
+
+            $mail->setFrom('info@villarte.qlynk.mx', 'VillArte Web');
+            $mail->addAddress('info@villarte.qlynk.mx');
+            $mail->addReplyTo($email, $name);
+
+            $mail->Subject = "Nueva cotización VillArte – $service";
+            $mail->Body    = "Nueva solicitud de información\n"
+                           . "================================\n"
+                           . "Nombre:   $name\n"
+                           . "Correo:   $email\n"
+                           . "Teléfono: $phone\n"
+                           . "Servicio: $service\n\n"
+                           . "Mensaje:\n$message";
+
+            $mail->send();
+            $form_success = true;
+
+        } catch (Exception $e) {
             $form_error = 'Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o llámanos al 81 2619 4101.';
         }
     }
