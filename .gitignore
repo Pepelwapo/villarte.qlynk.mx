@@ -8,4 +8,4 @@
 !.gitignore
 
 # Permitir el archivo deseado
-!public/index.php
+!index.php
