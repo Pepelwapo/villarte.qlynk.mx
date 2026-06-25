@@ -31,10 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
 
         $headers  = "From: VillArte Web <info@villarte.qlynk.mx>\r\n";
         $headers .= "Reply-To: $email\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 
-        $form_success = mail($to, $subject, $body, $headers);
+        $form_success = mail($to, $subject, $body, $headers, '-f info@villarte.qlynk.mx');
         if (!$form_success) {
             $form_error = 'Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o llámanos al 81 2619 4101.';
         }
