@@ -1,0 +1,11 @@
+# Ignorar todo
+*
+
+# Permitir navegar directorios
+!*/
+
+# Permitir el propio .gitignore
+!.gitignore
+
+# Permitir el archivo deseado
+!public/index.php
