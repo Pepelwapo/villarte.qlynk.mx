@@ -4,12 +4,21 @@
    Envío: info@villarte.qlynk.mx
 ───────────────────────────────────────────────────────── */
 
-require __DIR__ . '/PHPMailer/src/Exception.php';
-require __DIR__ . '/PHPMailer/src/PHPMailer.php';
-require __DIR__ . '/PHPMailer/src/SMTP.php';
+// Carga segura de PHPMailer — si falta algún archivo muestra error amigable en vez de 500
+if (
+    !file_exists(__DIR__ . '/PHPMailer/src/Exception.php') ||
+    !file_exists(__DIR__ . '/PHPMailer/src/PHPMailer.php') ||
+    !file_exists(__DIR__ . '/PHPMailer/src/SMTP.php')
+) {
+    die('Error de configuración del servidor. Contáctanos al 81 2619 4101.');
+}
 
+require_once __DIR__ . '/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/PHPMailer/src/SMTP.php';
+
+// Solo se importa PHPMailer — NO se importa Exception para evitar conflicto con \Exception de PHP
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 $form_success = false;
 $form_error   = '';
@@ -27,16 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $form_error = 'El correo electrónico ingresado no es válido.';
     } else {
-        $mail = new PHPMailer(true);
+
+        // Todo dentro del try para atrapar cualquier tipo de error sin generar 500
         try {
+            $mail = new PHPMailer(true);
             $mail->isSMTP();
-            $mail->Host       = 'mail.villarte.qlynk.mx';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'info@villarte.qlynk.mx';
-            $mail->Password   = '.V1ll4rt3.';
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SSL;
-            $mail->Port       = 465;
-            $mail->CharSet    = 'UTF-8';
+            $mail->Host        = 'mail.villarte.qlynk.mx';
+            $mail->SMTPAuth    = true;
+            $mail->Username    = 'info@villarte.qlynk.mx';
+            $mail->Password    = '.V1ll4rt3.';
+            $mail->SMTPSecure  = PHPMailer::ENCRYPTION_SSL;
+            $mail->Port        = 465;
+            $mail->CharSet     = 'UTF-8';
+            $mail->Timeout     = 15; // corta la conexión si el servidor no responde
 
             $mail->setFrom('info@villarte.qlynk.mx', 'VillArte Web');
             $mail->addAddress('info@villarte.qlynk.mx');
@@ -54,9 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
             $mail->send();
             $form_success = true;
 
-        } catch (Exception $e) {
+        } catch (\PHPMailer\PHPMailer\Exception $e) {
+            // Error específico de PHPMailer (credenciales, SSL, conexión, etc.)
+            $form_error = 'Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o llámanos al 81 2619 4101.';
+        } catch (\Exception $e) {
+            // Cualquier otro error inesperado — evita que llegue a 500
             $form_error = 'Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o llámanos al 81 2619 4101.';
         }
+
     }
 }
 ?>
