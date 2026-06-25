@@ -1,4 +1,10 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require __DIR__ . '/PHPMailer/src/Exception.php';
+require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require __DIR__ . '/PHPMailer/src/SMTP.php';
 /* ─────────────────────────────────────────────────────────
    VillArte | Formulario de contacto
    Envío: info@villarte.qlynk.mx
@@ -19,13 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $form_error = 'El correo electrónico ingresado no es válido.';
     } else {
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\Exception;
-
-        require __DIR__ . '/PHPMailer/src/Exception.php';
-        require __DIR__ . '/PHPMailer/src/PHPMailer.php';
-        require __DIR__ . '/PHPMailer/src/SMTP.php';
-
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
