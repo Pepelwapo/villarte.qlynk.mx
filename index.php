@@ -1,82 +1,3 @@
-<?php
-/* ─────────────────────────────────────────────────────────
-   VillArte | Formulario de contacto
-   Envío: info@villarte.qlynk.mx
-───────────────────────────────────────────────────────── */
-
-// Carga segura de PHPMailer — si falta algún archivo muestra error amigable en vez de 500
-if (
-    !file_exists(__DIR__ . '/PHPMailer/src/Exception.php') ||
-    !file_exists(__DIR__ . '/PHPMailer/src/PHPMailer.php') ||
-    !file_exists(__DIR__ . '/PHPMailer/src/SMTP.php')
-) {
-    die('Error de configuración del servidor. Contáctanos al 81 2619 4101.');
-}
-
-require_once __DIR__ . '/PHPMailer/src/Exception.php';
-require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
-require_once __DIR__ . '/PHPMailer/src/SMTP.php';
-
-// Solo se importa PHPMailer — NO se importa Exception para evitar conflicto con \Exception de PHP
-use PHPMailer\PHPMailer\PHPMailer;
-
-$form_success = false;
-$form_error   = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
-
-    $name    = htmlspecialchars(trim($_POST['name']    ?? ''));
-    $email   = htmlspecialchars(trim($_POST['email']   ?? ''));
-    $phone   = htmlspecialchars(trim($_POST['phone']   ?? ''));
-    $service = htmlspecialchars(trim($_POST['service'] ?? ''));
-    $message = htmlspecialchars(trim($_POST['message'] ?? ''));
-
-    if (!$name || !$email || !$message) {
-        $form_error = 'Por favor completa los campos obligatorios: nombre, correo y mensaje.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $form_error = 'El correo electrónico ingresado no es válido.';
-    } else {
-
-        // Todo dentro del try para atrapar cualquier tipo de error sin generar 500
-        try {
-            $mail = new PHPMailer(true);
-            $mail->isSMTP();
-            $mail->Host        = 'mail.villarte.qlynk.mx';
-            $mail->SMTPAuth    = true;
-            $mail->Username    = 'info@villarte.qlynk.mx';
-            $mail->Password    = '.V1ll4rt3.';
-            $mail->SMTPSecure  = PHPMailer::ENCRYPTION_SSL;
-            $mail->Port        = 465;
-            $mail->CharSet     = 'UTF-8';
-            $mail->Timeout     = 15; // corta la conexión si el servidor no responde
-
-            $mail->setFrom('info@villarte.qlynk.mx', 'VillArte Web');
-            $mail->addAddress('info@villarte.qlynk.mx');
-            $mail->addReplyTo($email, $name);
-
-            $mail->Subject = "Nueva cotización VillArte – $service";
-            $mail->Body    = "Nueva solicitud de información\n"
-                           . "================================\n"
-                           . "Nombre:   $name\n"
-                           . "Correo:   $email\n"
-                           . "Teléfono: $phone\n"
-                           . "Servicio: $service\n\n"
-                           . "Mensaje:\n$message";
-
-            $mail->send();
-            $form_success = true;
-
-        } catch (\PHPMailer\PHPMailer\Exception $e) {
-            // Error específico de PHPMailer (credenciales, SSL, conexión, etc.)
-            $form_error = 'Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o llámanos al 81 2619 4101.';
-        } catch (\Exception $e) {
-            // Cualquier otro error inesperado — evita que llegue a 500
-            $form_error = 'Hubo un problema al enviar el mensaje. Por favor intenta de nuevo o llámanos al 81 2619 4101.';
-        }
-
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="es-MX">
 
@@ -120,10 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['form_contact'])) {
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════════════════
-   CSS ORIGINAL — style.css (trash) embebido completo
-═══════════════════════════════════════════════════════ */
-
 :root{
 --bg:#050505;
 --card:#101010;
@@ -190,14 +107,20 @@ text-decoration:none;
 font-weight:600;
 }
 
+.btn-whatsapp{
+display:flex;
+align-items:center;
+justify-content:center;
+padding:10px 14px;
+}
+
 .hero{
-min-height:auto;
+min-height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
 text-align:center;
-padding-top:140px;
-padding-bottom:80px;
+padding-top:120px;
 }
 
 .hero-content{max-width:900px;}
@@ -271,23 +194,19 @@ color:white;
 text-decoration:none;
 }
 
-/* Cards section original — ahora 5 columnas */
-.cards-section{padding:70px 0;}
+.cards-section{padding:100px 0;}
 
 .cards-section .container{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:20px;
-align-items:stretch;
+gap:25px;
 }
 
 .service-card{
 background:var(--card);
-padding:30px;
+padding:35px;
 border-radius:24px;
 transition:.3s;
-display:flex;
-flex-direction:column;
 }
 
 .service-card:hover{transform:translateY(-8px);}
@@ -302,7 +221,6 @@ background:var(--gradient);
 
 .service-card p{color:#bdbdbd;}
 
-/* Workflow — clases originales */
 .workflow{padding:120px 0;}
 
 .section-title{
@@ -386,9 +304,6 @@ font-size:1.2rem;
 
 .benefit-card p{color:#bdbdbd;}
 
-/* ═══════════════════════════════════════════════════════
-   SECCIÓN CONTACTO — mismo look que el resto
-═══════════════════════════════════════════════════════ */
 .contact-section{
 padding:120px 0;
 background:var(--bg);
@@ -452,7 +367,6 @@ transition:.3s;
 
 .ci-text a:hover{color:var(--blue);}
 
-/* Form box */
 .form-box{
 background:#101010;
 border:1px solid #1f1f1f;
@@ -524,6 +438,7 @@ transition:opacity .3s,transform .3s;
 }
 
 .btn-form:hover{opacity:.88;transform:translateY(-1px);}
+.btn-form:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
 .form-msg{
 padding:15px 18px;
@@ -548,9 +463,6 @@ border:1px solid rgba(255,45,141,.25);
 color:var(--pink);
 }
 
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════════════ */
 @media(max-width:1100px){
   .cards-section .container{grid-template-columns:repeat(3,1fr);}
 }
@@ -577,7 +489,6 @@ color:var(--pink);
 <body>
 
 <header class="header">
-
 <div class="container">
 
 <a href="#inicio" class="logo">
@@ -592,131 +503,69 @@ color:var(--pink);
 <a href="#contacto">Contacto</a>
 </nav>
 
-<a href="#contacto" class="btn-header">Cotizar</a>
+<a href="https://wa.me/528126194101" target="_blank" rel="noopener" class="btn-header btn-whatsapp" aria-label="Contactar por WhatsApp">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="22" height="22" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.852L.057 23.926a.5.5 0 00.611.64l6.288-1.648A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.87 9.87 0 01-5.031-1.374l-.36-.214-3.733.979 1.001-3.651-.235-.374A9.878 9.878 0 012.118 12C2.118 6.53 6.53 2.118 12 2.118S21.882 6.53 21.882 12 17.47 21.882 12 21.882z"/></svg>
+</a>
 
 </div>
-
 </header>
 
 <!-- ════════════════════ HERO ════════════════════ -->
 <section class="hero" id="inicio">
-
 <div class="container">
-
 <div class="hero-content">
 
-<span class="hero-badge">
+<span class="hero-badge">SOLUCIONES VISUALES</span>
 
-SOLUCIONES VISUALES
+<h1>IMPRESIÓN Y<br>SOLUCIONES VISUALES</h1>
 
-</span>
+<h2>Impulsamos la imagen<br>de tu negocio con<br>impresión profesional</h2>
 
-<h1>
-
-IMPRESIÓN Y
-SOLUCIONES VISUALES
-
-</h1>
-
-<h2>
-
-Impulsamos la imagen
-de tu negocio con
-impresión profesional
-
-</h2>
-
-<p>
-
-Vinil Impreso •
-Etiquetas •
-Lonas •
-Banners •
-Señalización •
-Rotulación •
-Material Corporativo
-
-</p>
+<p>Vinil Impreso • Etiquetas • Lonas • Banners • Señalización • Rotulación • Material Corporativo</p>
 
 <div class="hero-buttons">
-
-<a href="#contacto" class="btn-primary">
-
-Solicitar Cotización
-
-</a>
-
-<a href="#galeria" class="btn-secondary">
-
-Ver Trabajos
-
-</a>
-
+<a href="#contacto" class="btn-primary">Solicitar Cotización</a>
+<a href="#galeria" class="btn-secondary">Ver Trabajos</a>
 </div>
 
 </div>
-
 </div>
-
 </section>
 
-<!-- ════════════ SEGMENTOS (5 cards horizontal) ════════════ -->
+<!-- ════════════ SEGMENTOS ════════════ -->
 <section class="cards-section" id="segmentos">
-
 <div class="container">
 
 <div class="service-card" id="empresas">
 <h3>Empresas</h3>
-<p>Kits corporativos,
-gafetes,
-reconocimientos,
-señalización interna,
-banners y material de RRHH.</p>
+<p>Kits corporativos, gafetes, reconocimientos, señalización interna, banners y material de RRHH.</p>
 </div>
 
 <div class="service-card" id="negocios">
 <h3>Negocios</h3>
-<p>Etiquetas,
-stickers,
-vinil para escaparates,
-microperforado,
-lonas y publicidad.</p>
+<p>Etiquetas, stickers, vinil para escaparates, microperforado, lonas y publicidad.</p>
 </div>
 
 <div class="service-card" id="restaurantes">
 <h3>Restaurantes</h3>
-<p>Menús,
-murales,
-promociones,
-displays de mostrador
-y rotulación.</p>
+<p>Menús, murales, promociones, displays de mostrador y rotulación.</p>
 </div>
 
 <div class="service-card" id="profesionales">
 <h3>Profesionales</h3>
-<p>Odontólogos,
-médicos,
-abogados,
-arquitectos
-y consultorios.</p>
+<p>Odontólogos, médicos, abogados, arquitectos y consultorios.</p>
 </div>
 
 <div class="service-card" id="hogar">
 <h3>Hogar</h3>
-<p>Vinilos decorativos,
-cuadros impresos,
-murales personalizados
-y señalización
-para tu espacio.</p>
+<p>Vinilos decorativos, cuadros impresos, murales personalizados y señalización para tu espacio.</p>
 </div>
 
 </div>
-
 </section>
 
-<!-- ════════════ NUESTRA FORMA DE TRABAJO ════════════ -->
+<!-- ════════════ METODOLOGÍA ════════════ -->
 <section class="workflow" id="metodologia">
-
 <div class="container">
 
 <div class="section-title">
@@ -778,15 +627,13 @@ para tu espacio.</p>
 </div>
 
 </div>
-
 </section>
 
-<!-- ════════════ GALERÍA (placeholder) ════════════ -->
+<!-- ════════════ GALERÍA ════════════ -->
 <section id="galeria"></section>
 
-<!-- ════════════ SOLICITAR INFORMACIÓN ════════════ -->
+<!-- ════════════ CONTACTO ════════════ -->
 <section class="contact-section" id="contacto">
-
 <div class="container">
 
 <div class="section-title">
@@ -796,7 +643,7 @@ para tu espacio.</p>
 
 <div class="contact-grid">
 
-<!-- Datos -->
+<!-- Info -->
 <div class="contact-info">
 
 <h3>Hablemos de<br>tu proyecto</h3>
@@ -841,60 +688,45 @@ para tu espacio.</p>
 
 </div>
 
-<!-- Formulario -->
+<!-- Formulario — sin PHP, todo via fetch() a send_mail.php -->
 <div class="form-box">
 
 <h3>Envíanos un mensaje</h3>
 
-<?php if ($form_success): ?>
-<div class="form-msg ok">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-Mensaje enviado exitosamente. ¡Pronto nos pondremos en contacto contigo!
-</div>
-<?php else: ?>
+<div id="form-msg" class="form-msg" style="display:none;"></div>
 
-<?php if ($form_error): ?>
-<div class="form-msg err">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-<?= $form_error ?>
-</div>
-<?php endif; ?>
-
-<form method="POST" action="#contacto">
-<input type="hidden" name="form_contact" value="1">
+<form id="contact-form">
 
 <div class="fg-row">
 <div class="fg">
 <label for="f-name">Nombre *</label>
-<input type="text" id="f-name" name="name" placeholder="Tu nombre completo" required
-       value="<?= htmlspecialchars($_POST['name'] ?? '') ?>">
+<input type="text" id="f-name" name="name" placeholder="Tu nombre completo" required>
 </div>
 <div class="fg">
 <label for="f-email">Correo electrónico *</label>
-<input type="email" id="f-email" name="email" placeholder="correo@ejemplo.com" required
-       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+<input type="email" id="f-email" name="email" placeholder="correo@ejemplo.com" required>
 </div>
 </div>
 
 <div class="fg-row">
 <div class="fg">
 <label for="f-phone">Teléfono</label>
-<input type="tel" id="f-phone" name="phone" placeholder="81 0000 0000"
-       value="<?= htmlspecialchars($_POST['phone'] ?? '') ?>">
+<input type="tel" id="f-phone" name="phone" placeholder="81 0000 0000">
 </div>
 <div class="fg">
 <label for="f-service">Servicio de interés</label>
 <select id="f-service" name="service">
 <option value="">— Selecciona —</option>
-<?php
-$opts = ['Vinil Impreso','Etiquetas / Stickers','Lonas y Banners',
-         'Rotulación Vehicular','Señalización','Material Corporativo',
-         'Mural / Decorativo','Microperforado','Hogar / Decoración','Otro'];
-foreach ($opts as $o):
-  $sel = (($_POST['service'] ?? '') === $o) ? 'selected' : '';
-?>
-<option value="<?= $o ?>" <?= $sel ?>><?= $o ?></option>
-<?php endforeach; ?>
+<option value="Vinil Impreso">Vinil Impreso</option>
+<option value="Etiquetas / Stickers">Etiquetas / Stickers</option>
+<option value="Lonas y Banners">Lonas y Banners</option>
+<option value="Rotulación Vehicular">Rotulación Vehicular</option>
+<option value="Señalización">Señalización</option>
+<option value="Material Corporativo">Material Corporativo</option>
+<option value="Mural / Decorativo">Mural / Decorativo</option>
+<option value="Microperforado">Microperforado</option>
+<option value="Hogar / Decoración">Hogar / Decoración</option>
+<option value="Otro">Otro</option>
 </select>
 </div>
 </div>
@@ -903,23 +735,76 @@ foreach ($opts as $o):
 <label for="f-message">Descripción del proyecto *</label>
 <textarea id="f-message" name="message"
   placeholder="Cuéntanos: tipo de material, medidas aproximadas, cantidad, uso final..."
-  required><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
+  required></textarea>
 </div>
 
-<button type="submit" class="btn-form">Enviar Mensaje</button>
+<button type="submit" class="btn-form" id="btn-submit">Enviar Mensaje</button>
 
 </form>
-<?php endif; ?>
 
 </div>
 
 </div><!-- /contact-grid -->
 
 </div>
-
 </section>
 
-<script>console.log("VillArte iniciado");</script>
+<script>
+(function () {
+  var form   = document.getElementById('contact-form');
+  var msgBox = document.getElementById('form-msg');
+  var btn    = document.getElementById('btn-submit');
+
+  var iconOk  = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var iconErr = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+  function showMsg(type, text) {
+    msgBox.className = 'form-msg ' + type;
+    msgBox.innerHTML = (type === 'ok' ? iconOk : iconErr) + ' ' + text;
+    msgBox.style.display = 'flex';
+    msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    btn.disabled    = true;
+    btn.textContent = 'Enviando…';
+    msgBox.style.display = 'none';
+
+    fetch('send_mail.php', {
+      method: 'POST',
+      body:   new FormData(form)
+    })
+    .then(function (res) { return res.text(); })
+    .then(function (raw) {
+      var json;
+      try { json = JSON.parse(raw); }
+      catch (err) {
+        console.error('Respuesta no JSON:', raw);
+        showMsg('err', 'Error del servidor. Por favor llámanos al 81 2619 4101.');
+        btn.disabled = false; btn.textContent = 'Enviar Mensaje';
+        return;
+      }
+
+      if (json.ok) {
+        showMsg('ok', '¡Mensaje enviado! Pronto nos pondremos en contacto contigo.');
+        form.reset();
+      } else {
+        if (json.debug) console.warn('SMTP debug:', json.debug);
+        showMsg('err', json.error || 'Hubo un problema. Por favor llámanos al 81 2619 4101.');
+      }
+
+      btn.disabled = false; btn.textContent = 'Enviar Mensaje';
+    })
+    .catch(function (err) {
+      console.error('Fetch error:', err);
+      showMsg('err', 'No se pudo conectar. Por favor llámanos al 81 2619 4101.');
+      btn.disabled = false; btn.textContent = 'Enviar Mensaje';
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
