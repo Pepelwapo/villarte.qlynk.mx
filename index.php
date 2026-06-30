@@ -191,12 +191,13 @@ font-weight:600;
 }
 
 .hero{
-min-height:100vh;
+min-height:auto;
 display:flex;
 align-items:center;
 justify-content:center;
 text-align:center;
-padding-top:120px;
+padding-top:140px;
+padding-bottom:80px;
 }
 
 .hero-content{max-width:900px;}
@@ -271,19 +272,22 @@ text-decoration:none;
 }
 
 /* Cards section original — ahora 5 columnas */
-.cards-section{padding:100px 0;}
+.cards-section{padding:70px 0;}
 
 .cards-section .container{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:25px;
+gap:20px;
+align-items:stretch;
 }
 
 .service-card{
 background:var(--card);
-padding:35px;
+padding:30px;
 border-radius:24px;
 transition:.3s;
+display:flex;
+flex-direction:column;
 }
 
 .service-card:hover{transform:translateY(-8px);}
