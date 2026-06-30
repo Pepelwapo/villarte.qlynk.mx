@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>VillArte | Vinil Impreso, Etiquetas, Lonas y Soluciones Visuales en Monterrey</title>
+<link rel="icon" type="image/png" href="img/LogoPestana.png">
 
 <meta name="description" content="Especialistas en vinil impreso, etiquetas personalizadas, lonas, banners, microperforado, rotulación y soluciones visuales para empresas, negocios, restaurantes, profesionales y hogar en Monterrey y área metropolitana. Tel: 8126194101.">
 
@@ -115,15 +116,14 @@ padding:10px 14px;
 }
 
 .hero{
-min-height:100vh;
+padding:130px 0 2cm;
 display:flex;
 align-items:center;
 justify-content:center;
 text-align:center;
-padding-top:120px;
 }
 
-.hero-content{max-width:900px;}
+.hero-content{max-width:700px;margin:0 auto;}
 
 .hero-badge{
 display:inline-block;
@@ -135,8 +135,8 @@ margin-bottom:25px;
 }
 
 .hero h1{
-font-size:4rem;
-line-height:1.1;
+font-size:2.8rem;
+line-height:1.2;
 margin-bottom:20px;
 }
 
@@ -194,7 +194,7 @@ color:white;
 text-decoration:none;
 }
 
-.cards-section{padding:100px 0;}
+.cards-section{padding:2cm 0;}
 
 .cards-section .container{
 display:grid;
@@ -221,11 +221,11 @@ background:var(--gradient);
 
 .service-card p{color:#bdbdbd;}
 
-.workflow{padding:120px 0;}
+.workflow{padding:2cm 0;}
 
 .section-title{
 text-align:center;
-margin-bottom:80px;
+margin-bottom:40px;
 }
 
 .section-title span{
@@ -240,72 +240,196 @@ font-size:3rem;
 margin-top:10px;
 }
 
-.workflow-steps{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:25px;
-margin-bottom:60px;
+/* ══════════════════════════════════════
+   FLUJOS DE TRABAJO — diagrama convergente
+   ══════════════════════════════════════ */
+
+/* contenedor total del diagrama */
+.flows-diagram{
+  position:relative;
+  margin-bottom:0;
 }
 
-.step{text-align:center;}
+/* etiqueta de flujo */
+.flow-label{
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.flow-label::before{
+  content:'';
+  display:inline-block;
+  width:20px;height:2px;
+  border-radius:2px;
+}
+.flow-label.lbl-blue { color:#00B6FF; }
+.flow-label.lbl-blue::before { background:#00B6FF; }
+.flow-label.lbl-purple { color:#8E4BFF; }
+.flow-label.lbl-purple::before { background:#8E4BFF; }
+.flow-label.lbl-shared { color:#bdbdbd; }
+.flow-label.lbl-shared::before { background:linear-gradient(90deg,#00B6FF,#8E4BFF); }
 
-.step-number{
-width:60px;
-height:60px;
-margin:auto;
-margin-bottom:20px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:700;
-background:#101010;
-border:1px solid #222;
+/* fila de pasos */
+.flow-row{
+  display:flex;
+  align-items:flex-start;
 }
 
-.success{
-background:linear-gradient(135deg,#FF2D8D,#FF8A00);
-color:white;
+/* paso individual */
+.fstep{
+  flex:1;
+  text-align:center;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:0 6px;
 }
 
-.step h3{
-margin-bottom:10px;
-font-size:1.2rem;
+/* línea horizontal entre pasos (::after en todos menos el último de la fila) */
+.fstep.has-conn::after{
+  content:'';
+  position:absolute;
+  top:29px;
+  left:calc(50% + 32px);
+  right:calc(-50% + 32px);
+  height:2px;
+}
+.fstep.conn-blue::after  { background:linear-gradient(90deg,#00B6FF66,#00B6FFaa); }
+.fstep.conn-purple::after{ background:linear-gradient(90deg,#8E4BFF66,#8E4BFFaa); }
+.fstep.conn-shared::after{ background:linear-gradient(90deg,#ffffff22,#ffffff44); }
+
+/* círculo numerado */
+.fstep-num{
+  width:60px;height:60px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1rem;
+  position:relative;z-index:2;flex-shrink:0;
+}
+.fn-blue   { background:#060f18; border:2px solid #00B6FF; color:#00B6FF; }
+.fn-purple { background:#0d0618; border:2px solid #8E4BFF; color:#8E4BFF; }
+.fn-shared { background:#111; border:2px solid #333; color:#bdbdbd; }
+.fn-success{
+  background:linear-gradient(135deg,#FF2D8D,#FF8A00);
+  border:none; color:#fff;
+  box-shadow:0 0 22px rgba(255,45,141,.4);
 }
 
-.step p{
-color:#9f9f9f;
-font-size:.95rem;
+/* texto del paso */
+.fstep-body{ margin-top:14px; padding:0 6px; }
+.fstep-body h3{ font-size:.95rem; font-weight:700; margin-bottom:8px; }
+.fstep-body p { color:#6e6e6e; font-size:.8rem; line-height:1.6; }
+
+.h-blue  { color:#00B6FF; }
+.h-purple{ color:#8E4BFF; }
+.h-shared{ color:#ccc; }
+.h-success{
+  background:linear-gradient(135deg,#FF2D8D,#FF8A00);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.step-highlight h3{
-background:linear-gradient(135deg,#FF2D8D,#FF8A00);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+/* zona de convergencia: SVG + pasos compartidos */
+.flows-merge{
+  display:flex;
+  gap:0;
+  margin-top:0;
 }
 
+/* columna izquierda: flujos únicos + SVG */
+.flows-left{
+  flex:2.2;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+
+/* bloque de un flujo único */
+.flow-unique{
+  padding:16px 16px 16px 0;
+  border-right:1px solid transparent;
+}
+.flow-unique.top{ padding-bottom:8px; }
+.flow-unique.bot{ padding-top:8px; }
+
+/* SVG conector diagonal */
+.flows-svg-wrap{
+  position:relative;
+  height:40px;
+  overflow:hidden;
+}
+.flows-svg-wrap svg{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  overflow:hidden;
+}
+
+/* badge central "convergen aquí" */
+.merge-badge{
+  position:absolute;
+  left:48%;top:50%;
+  transform:translate(-50%,-50%);
+  background:#141414;
+  border:1px solid #ffffff18;
+  border-radius:20px;
+  padding:4px 14px;
+  font-size:.66rem;
+  font-weight:600;
+  color:#888;
+  letter-spacing:.8px;
+  white-space:nowrap;
+  z-index:3;
+}
+
+/* columna derecha: pasos compartidos */
+.flows-right{
+  flex:3;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:0 0 0 24px;
+}
+
+.shared-row{
+  display:flex;
+  align-items:flex-start;
+}
+
+/* ── BENEFICIOS ── */
 .workflow-benefits{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:25px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+  margin-top:3.5cm; /* separación especial diagrama → beneficios */
 }
-
 .benefit-card{
-background:#101010;
-padding:30px;
-border-radius:20px;
-border:1px solid #1f1f1f;
+  background:#101010;
+  padding:30px;
+  border-radius:20px;
+  border:1px solid #1f1f1f;
 }
+.benefit-card h4{ margin-bottom:10px; font-size:1.2rem; }
+.benefit-card p{ color:#bdbdbd; }
 
-.benefit-card h4{
-margin-bottom:10px;
-font-size:1.2rem;
+@media(max-width:900px){
+  .flows-merge{ flex-direction:column; }
+  .flows-left{ flex:none; }
+  .flow-unique{ padding:20px 0; border:none; }
+  .flows-right{ padding:0; flex:none; }
+  .flows-svg-wrap{ display:none; }
+  .fstep.has-conn::after{ display:none; }
+  .workflow-benefits{ grid-template-columns:1fr; }
 }
-
-.benefit-card p{color:#bdbdbd;}
 
 .contact-section{
-padding:120px 0;
+padding:2cm 0;
 background:var(--bg);
 }
 
@@ -463,12 +587,41 @@ border:1px solid rgba(255,45,141,.25);
 color:var(--pink);
 }
 
+.site-footer{
+  border-top:1px solid #1e1e1e;
+  padding:28px 0;
+  background:var(--bg);
+}
+.site-footer .container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+}
+.footer-logo img{
+  height:36px;
+  opacity:.8;
+}
+.footer-copy{
+  font-size:.78rem;
+  color:#555;
+  letter-spacing:.5px;
+  text-align:center;
+  flex:1;
+}
+@media(max-width:600px){
+  .site-footer .container{ justify-content:center; }
+  .footer-logo{ display:none; }
+  .footer-copy{ text-align:center; }
+}
+
 @media(max-width:1100px){
   .cards-section .container{grid-template-columns:repeat(3,1fr);}
 }
 
 @media(max-width:900px){
-  .hero h1{font-size:2.8rem;}
+  .hero h1{font-size:2rem;}
   .cards-section .container{grid-template-columns:repeat(2,1fr);}
   .nav{display:none;}
   .workflow-steps{grid-template-columns:1fr;}
@@ -499,7 +652,6 @@ color:var(--pink);
 <a href="#inicio">Inicio</a>
 <a href="#segmentos">Servicios</a>
 <a href="#metodologia">Metodología</a>
-<a href="#galeria">Galería</a>
 <a href="#contacto">Contacto</a>
 </nav>
 
@@ -517,7 +669,7 @@ color:var(--pink);
 
 <span class="hero-badge">SOLUCIONES VISUALES</span>
 
-<h1>IMPRESIÓN Y<br>SOLUCIONES VISUALES</h1>
+<h1>IMPRESIÓN Y SOLUCIONES VISUALES</h1>
 
 <h2>Impulsamos la imagen<br>de tu negocio con<br>impresión profesional</h2>
 
@@ -573,39 +725,106 @@ color:var(--pink);
 <h2>Nuestra Forma de Trabajo</h2>
 </div>
 
-<div class="workflow-steps">
+<!-- ══ DIAGRAMA CONVERGENTE ══ -->
+<div class="flows-diagram">
+<div class="flows-merge">
 
-<div class="step">
-<div class="step-number">1</div>
-<h3>Entendemos</h3>
-<p>Analizamos tu proyecto, marca y objetivos para ofrecer la mejor solución visual.</p>
-</div>
+  <!-- ── COLUMNA IZQUIERDA: dos flujos únicos ── -->
+  <div class="flows-left">
 
-<div class="step">
-<div class="step-number">2</div>
-<h3>Diseñamos</h3>
-<p>Creamos o adaptamos diseños enfocados en generar impacto visual.</p>
-</div>
+    <!-- FLUJO 1 -->
+    <div class="flow-unique top">
+      <p class="flow-label lbl-blue">Flujo Completo — Diseño + Producción</p>
+      <div class="flow-row">
+        <div class="fstep has-conn conn-blue">
+          <div class="fstep-num fn-blue">1</div>
+          <div class="fstep-body">
+            <h3 class="h-blue">Entendemos</h3>
+            <p>Analizamos tu proyecto, marca y objetivos para ofrecer la mejor solución visual.</p>
+          </div>
+        </div>
+        <div class="fstep">
+          <div class="fstep-num fn-blue">2</div>
+          <div class="fstep-body">
+            <h3 class="h-blue">Diseñamos</h3>
+            <p>Creamos el diseño enfocado en generar impacto y reflejar tu marca.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="step">
-<div class="step-number">3</div>
-<h3>Producimos</h3>
-<p>Imprimimos utilizando materiales de calidad y equipos profesionales.</p>
-</div>
+    <!-- SVG conector diagonal -->
+    <div class="flows-svg-wrap">
+      <svg viewBox="0 0 500 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- línea flujo 1: baja desde derecha arriba hacia el centro derecho -->
+        <path d="M 500 10 C 400 10, 350 40, 500 70"
+              fill="none" stroke="#00B6FF" stroke-width="1.5"
+              stroke-dasharray="6,4" opacity=".5"/>
+        <!-- línea flujo 2: sube desde derecha abajo hacia el centro derecho -->
+        <path d="M 500 70 C 400 70, 350 40, 500 10"
+              fill="none" stroke="#8E4BFF" stroke-width="1.5"
+              stroke-dasharray="6,4" opacity=".5"/>
+      </svg>
+      <div class="merge-badge">ambos flujos convergen aquí</div>
+    </div>
 
-<div class="step">
-<div class="step-number">4</div>
-<h3>Enviamos</h3>
-<p>Empacamos cuidadosamente y enviamos tu pedido listo para usar.</p>
-</div>
+    <!-- FLUJO 2 -->
+    <div class="flow-unique bot">
+      <p class="flow-label lbl-purple">Flujo Express — Ya tienes tu diseño</p>
+      <div class="flow-row">
+        <div class="fstep has-conn conn-purple">
+          <div class="fstep-num fn-purple">1</div>
+          <div class="fstep-body">
+            <h3 class="h-purple">Realizas tu Pedido</h3>
+            <p>Nos indicas qué necesitas, la cantidad y medidas del material.</p>
+          </div>
+        </div>
+        <div class="fstep">
+          <div class="fstep-num fn-purple">2</div>
+          <div class="fstep-body">
+            <h3 class="h-purple">Compartes tu Archivo</h3>
+            <p>Nos envías tu diseño en formatos SVG, EPS, JPG o PNG.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="step step-highlight">
-<div class="step-number success">✓</div>
-<h3>Tu Marca Destaca</h3>
-<p>Una imagen profesional genera confianza y atrae más clientes.</p>
-</div>
+  </div><!-- /flows-left -->
 
-</div>
+  <!-- ── COLUMNA DERECHA: pasos compartidos ── -->
+  <div class="flows-right">
+    <p class="flow-label lbl-shared" style="justify-content:center;margin-bottom:24px;">Pasos compartidos por ambos flujos</p>
+    <div class="shared-row">
+
+      <div class="fstep has-conn conn-shared">
+        <div class="fstep-num fn-shared">3</div>
+        <div class="fstep-body">
+          <h3 class="h-shared">Producimos</h3>
+          <p>Imprimimos con materiales de calidad y equipos profesionales.</p>
+        </div>
+      </div>
+
+      <div class="fstep has-conn conn-shared">
+        <div class="fstep-num fn-shared">4</div>
+        <div class="fstep-body">
+          <h3 class="h-shared">Enviamos</h3>
+          <p>Empacamos y enviamos tu pedido listo para usar.</p>
+        </div>
+      </div>
+
+      <div class="fstep">
+        <div class="fstep-num fn-success">✓</div>
+        <div class="fstep-body">
+          <h3 class="h-success">Tu Marca Destaca</h3>
+          <p>Imagen profesional que genera confianza y atrae más clientes.</p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /flows-right -->
+
+</div><!-- /flows-merge -->
+</div><!-- /flows-diagram -->
 
 <div class="workflow-benefits">
 
@@ -805,6 +1024,16 @@ color:var(--pink);
   });
 })();
 </script>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer class="site-footer">
+<div class="container">
+  <div class="footer-logo">
+    <img src="img/LogoVillArte1.png" alt="VillArte">
+  </div>
+  <p class="footer-copy">© 2026 VILLARTE. Soluciones visuales.</p>
+</div>
+</footer>
 
 </body>
 </html>
